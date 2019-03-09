@@ -10,10 +10,22 @@ class LoginForm(FlaskForm):
         submit = SubmitField('提交')
 
         def validate_email_or_name(self, field):
+            user = User.query.filter_by(email=field.data).first()
+
+            if not user:
+                user = User.query.filter_by(username=field.data).first()
+                if not user:
+                    raise ValidationError('邮箱或用户名不存在')
+                if user.is_disable:
+                    raise ValidationError('联系管理处理')
+            '''
             u1 = User.query.filter_by(email=field.data).first()
             u2 = User.query.filter_by(username=field.data).first()
             if not u1 and not u2:
                 raise ValidationError('邮箱或用户名不存在')
+            elif u1.is_disable or u2.is_disable:
+                raise ValidationError('联系管理处理')
+            '''
 
         def validate_password(self, field):
             user = User.query.filter_by(username=self.email_or_name.data).first()
@@ -67,7 +79,7 @@ class CompanyEditForm(FlaskForm):
     password = StringField('密码')
     phone = StringField('手机号')
     site = StringField('公司网站', validators=[Length(0, 64)])
-    discription = StringField('一句话简介', validators=[Length(0, 64)])
+    description = StringField('一句话简介', validators=[Length(0, 64)])
     submit = SubmitField('提交')
 
     def update(self, company):

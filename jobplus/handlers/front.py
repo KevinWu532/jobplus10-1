@@ -25,13 +25,14 @@ def login():
         user = User.query.filter_by(email=form.email_or_name.data).first()
         if not user:
             user = User.query.filter_by(username=form.email_or_name.data).first()
-        login_user(user, form.remember_me.data)
-        next = 'user.profile'
-        if user.is_admin:
-            next = 'admin.index'
-        elif user.is_company:
-            next = 'company.profile'
-        return redirect(url_for(next))
+        if not user.is_disable:
+            login_user(user, form.remember_me.data)
+            next = 'user.profile'
+            if user.is_admin:
+                next = 'admin.index'
+            elif user.is_company:
+                next = 'company.profile'
+            return redirect(url_for(next))
     return render_template('login.html', form=form)
 
 @front.route('/userregister', methods=['GET', 'POST'])
@@ -60,5 +61,5 @@ def companyregister():
 @login_required
 def logout():
     logout_user()
-    flash('您已登录成功', 'success')
+    flash('您已退出登录成功', 'success')
     return redirect(url_for('.index'))

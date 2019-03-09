@@ -38,7 +38,7 @@
             <td>{% if user.is_company %}{{ user.detail.site }}{% endif %}</td>
             <td>
                 <div class="btn-group" role="group">
-                    <a href="{{ url_for('admin.disable_user', user_id=user.id) }}" type="button" class="btn btn-default" title="编辑">
+                    <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" type="button" class="btn btn-default" title="编辑">
                         编辑
                     </a>
                     <a href="{{ url_for('admin.disable_user', user_id=user.id) }}" type="button" class="btn btn-default">
